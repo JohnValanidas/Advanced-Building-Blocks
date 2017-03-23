@@ -24,6 +24,7 @@ module Enumerable
 
   def my_select
     index = 0
+    return self.to_enum if !block_given?
     select_array = []
     while index < self.size
       if yield(self[index]) == true
@@ -49,6 +50,9 @@ module Enumerable
   end
 
   def my_any?
+    if !block_given?
+      return my_any? {|obj| obj}
+    end
     index = 0;
     state = false
     while index < self.size
@@ -63,6 +67,9 @@ module Enumerable
   end
 
   def my_none?
+    if !block_given?
+      return my_none? {|obj| obj}
+    end
     index = 0
     none = true
     while index < self.size
@@ -149,36 +156,3 @@ end
 def multiply_els array
   array.my_inject(:*)
 end
-
-#testing
-array = [1,4,2,5,6]
-puts ".my_each"
-array.my_each {|element| print element}
-puts ".each:"
-array.each { |element| print element}
-puts ".my_select:"
-puts array.my_select {|element| element%2 == 0}
-puts ".select:"
-puts array.select {|element| element%2 == 0}
-puts ".my_all?:"
-puts array.my_all? {|element| element > 10 }
-puts ".all?:"
-puts array.all? {|element| element > 10 }
-puts ".my_any?:"
-puts array.my_any? {|element| element == 3}
-puts ".any?"
-puts array.any? {|element| element == 3}
-puts ".my_count:"
-puts array.my_count
-puts ".count:"
-puts array.count
-puts "my_map:"
-puts array.my_map {|element| element * 2}
-puts ".map:"
-puts array.map {|element| element * 2}
-puts ".my_inject:"
-puts array.my_inject(2,:*)
-puts "inject:"
-puts array.inject(2,:*)
-puts "multiply_els([2,4,5]) #=> 40:"
-puts multiply_els([2,4,5])
